@@ -3,6 +3,8 @@ import collections
 import nltk
 import torch
 
+import matplotlib.pyplot as plt
+
 
 class BLEUScoreNLTK:
     """
@@ -74,3 +76,54 @@ class BLEUScore:
             self.bleu_scores.append(BLEUscore)
 
         return torch.tensor(self.bleu_scores)
+    
+    def plot_bleu_scores(self, sentence_lengths, plotting_style="-"):
+
+        """
+        Plot BLEU scores against sentence lengths.
+
+        Args:
+            sentence_lengths (list): List of sentence lengths.
+            plotting_style (str): Line style for the plot.
+
+        Returns:
+            None
+        """
+
+        plt.plot(sentence_lengths, self.bleu_scores, plotting_style, label="BLEU Score")
+        plt.xlabel("Sentence Length")
+        plt.ylabel("BLEU Score")
+        plt.legend(loc="lower left")
+        plt.show()
+
+import random
+
+# Number of iterations
+num_iterations = 5
+
+# Your training or generation loop
+for iteration in range(1, num_iterations + 1):
+    # Example: Generate random reference and candidate tensors for the current iteration
+    reference_tensor = torch.randint(1, 10, size=(random.randint(3, 8),))  # Random length between 3 and 8
+    candidate_tensor = torch.randint(1, 10, size=(random.randint(3, 8),))  # Random length between 3 and 8
+
+    # Instantiate the BLEUScore class for the current iteration
+    bleu_calculator = BLEUScore(reference_tensor ,candidate_tensor , n=2)
+
+    # Calculate BLEU scores
+    bleu_scores = bleu_calculator.calculate_bleu_score()
+
+    
+
+    # Assuming sentence_lengths is a list of corresponding sentence lengths for the current iteration
+    sentence_lengths = [len(reference_tensor), len(candidate_tensor)]
+
+    # Print some information about the current iteration
+    print(f"Iteration {iteration}:")
+    print(f"Reference Tensor: {reference_tensor.tolist()}")
+    print(f"Candidate Tensor: {candidate_tensor.tolist()}")
+    print(f"Sentence Lengths: {sentence_lengths}")
+    print(f"BLEU Scores: {bleu_scores.tolist()}")
+
+    # Plot BLEU scores against sentence lengths
+    bleu_calculator.plot_bleu_scores(sentence_lengths)
