@@ -1,66 +1,29 @@
+import unittest
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from decoder import Decoder  # Replace 'your_module' with the actual name of your module
 
-    
-class Decoder(nn.Module):
-    def __init__(self, hidden_size, output_size):
-        """
-        Args:
-            hidden_size (int): Size of the hidden state in the decoder.
-            output_size (int): Size of the vocabulary for the output sequence.
-        """
-        super(Decoder, self).__init__()
-        self.hidden_size = hidden_size
-
-        # Embedding layer to convert output sequence indices to dense vectors
-        self.embedding = nn.Embedding(output_size, hidden_size)
-        
-        # GRU layer to process input and previous hidden state
-        # Input size: embedding_size (hidden_size), 2*  hidden_size (previous hidden state) = for forward & backward 
-        self.gru = nn.GRU(hidden_size * 3, hidden_size)
-
-        # Output layer to produce final predictions
-        # Input size: hidden_size, output_size (vocabulary size)
-        self.out = nn.Linear(hidden_size, output_size)
-
-        # Softmax activation for probability distribution over the vocabulary
-        self.softmax = nn.LogSoftmax(dim=1)
-
+class TestDecoder(unittest.TestCase):
+    def setUp(self):
+        self.hidden_size = 10
+        self.output_size = 5
+        self.decoder = Decoder(self.hidden_size, self.output_size)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    def forward(self, input, hidden):
-        """
-        Forward pass of the decoder.
+    def test_forward(self):
+        input_seq = torch.tensor([2], dtype=torch.long, device=self.device)  # Replace [2] with an example sequence
+        prev_hidden = self.decoder.initHidden()
 
-        Args:
-            input (Tensor): The input sequence at a specific time step.
-            hidden (Tensor): The hidden state from the previous time step.
+        with torch.no_grad():
+            output, hidden = self.decoder(input_seq, prev_hidden)
 
-        Returns:
-            output (Tensor): The output sequence prediction.
-            hidden (Tensor): The updated hidden state.
-        """
+        # Ensure the output shape is correct
+        self.assertEqual(output.size(), torch.Size([1, self.output_size]))
 
-        # Convert output sequence index to dense vector using embedding layer
-        embedded = self.embedding(input).view(1, 1, -1)
+    def test_init_hidden(self):
+        initial_hidden = self.decoder.initHidden()
 
-        # Apply ReLU activation
-        embedded = F.relu(embedded) 
+        # Ensure the initial hidden state has the correct shape
+        self.assertEqual(initial_hidden.size(), torch.Size([1, 1, self.hidden_size]))
 
-        # Process the input through the GRU layer
-        output, hidden = self.gru(embedded, hidden)
-
-        # Apply linear layer and softmax to get final predictions
-        output = self.softmax(self.out(output[0]))
-
-        return output, hidden
-
-    def initHidden(self):
-        """
-        Initialize the hidden state with zeros.
-
-        Returns:
-            Tensor: The initial hidden state.
-        """
-        return torch.zeros(1, 1, self.hidden_size, device=self.device)
+if __name__ == '__main__':
+    unittest.main()

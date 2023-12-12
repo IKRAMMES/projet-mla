@@ -1,5 +1,6 @@
 import unittest
 import torch
+from decoder import Decoder
 
 class TestAttentionDecoder(unittest.TestCase):
     def setUp(self):
