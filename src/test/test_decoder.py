@@ -2,32 +2,26 @@ import unittest
 import torch
 from decoder import Decoder
 
-class TestAttentionDecoder(unittest.TestCase):
+class TestDecoder(unittest.TestCase):
     def setUp(self):
-        self.hidden_size = 16
-        self.output_size = 10
-        self.max_length = 20
-        self.dropoutP = 0.1
-
-        self.decoder = Attention_Decoder(self.hidden_size, self.output_size, self.max_length, self.dropoutP)
-
-        self.input_seq = torch.tensor([1], dtype=torch.long)
-        self.prev_hidden = torch.randn(1, 1, self.hidden_size * 2)
-        self.encoder_outputs = torch.randn(1, self.max_length, self.hidden_size * 2)
-        self.encoder_outputs = self.encoder_outputs.unsqueeze(0)
-        self.encoder_outputs = self.encoder_outputs.permute(0, 3, 1, 2)
-        self.encoder_outputs = self.encoder_outputs.squeeze(0)  
-
+        self.hidden_size = 10
+        self.output_size = 5
+        self.decoder = Decoder(self.hidden_size, self.output_size)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def test_forward(self):
-        output, hidden, attn_weights = self.decoder(self.input_seq, self.prev_hidden, self.encoder_outputs)
-        self.assertIsInstance(output, torch.Tensor)
-        self.assertIsInstance(hidden, torch.Tensor)
-        self.assertIsInstance(attn_weights, torch.Tensor)
+        input_seq = torch.tensor([2], dtype=torch.long, device=self.device) 
+        prev_hidden = self.decoder.initHidden()
+
+        with torch.no_grad():
+            output, hidden = self.decoder(input_seq, prev_hidden)
+
+        self.assertEqual(output.size(), torch.Size([1, self.output_size]))
 
     def test_init_hidden(self):
         initial_hidden = self.decoder.initHidden()
-        self.assertIsInstance(initial_hidden, torch.Tensor)
+
+        self.assertEqual(initial_hidden.size(), torch.Size([1, 1, self.hidden_size]))
 
 if __name__ == '__main__':
     unittest.main()
