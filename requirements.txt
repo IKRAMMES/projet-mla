@@ -1,0 +1,15 @@
+matplotlib==3.8.1
+numba==0.58.1
+numpy==1.24.1
+pandas==2.1.2
+scikit-learn==1.3.2
+tensorflow
+torch==2.1.0
+torchaudio==2.1.0
+torchvision==0.16.0
+datasets
+black 
+isort
+pylint
+pytest
+mosestokenizer
