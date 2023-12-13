@@ -77,29 +77,31 @@ class BLEUScore:
 
         return torch.tensor(self.bleu_scores)
     
-def plot_bleu_scores_nltk(reference_tensors, candidate_tensors):
+def plot_bleu_scores(reference_tensors, candidate_tensors):
     bleu_calculator = BLEUScoreNLTK(reference_tensors, candidate_tensors)
     bleu_scores = bleu_calculator.calculate_bleu_score()
 
-    
     sentence_lengths = [len(ref) for ref in reference_tensors]
 
-    plt.plot(sentence_lengths, bleu_scores, label="BLEU Score")
+    plt.plot(sentence_lengths, bleu_scores,linestyle='-', label="BLEU Score")
     plt.xlabel("Sentence Length")
     plt.ylabel("BLEU Score")
     plt.legend(loc="lower left")
     plt.show()
 
 
+
+
 reference_tensors = [
-    torch.tensor([1, 2, 3, 4]),
-    torch.tensor([5, 6, 7, 8, 9, 10]),
-    torch.tensor([11, 12, 13, 14, 15, 16, 17]),
+    torch.tensor([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    torch.tensor([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]),
+    torch.tensor([27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44]),
 ]
 candidate_tensors = [
-    torch.tensor([1, 2, 3, 5]),
-    torch.tensor([5, 6, 7, 8, 9]),
-    torch.tensor([11, 12, 13, 14, 15, 16]),
+    torch.tensor([1, 2, 3, 4, 5, 6, 7, 8, 9]),
+    torch.tensor([13, 14, 15, 16, 17, 18, 19, 20, 21, 22]),
+    torch.tensor([27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41]),
 ]
 
-plot_bleu_scores_nltk(reference_tensors, candidate_tensors)
+
+plot_bleu_scores(reference_tensors, candidate_tensors)
