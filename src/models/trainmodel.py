@@ -4,7 +4,7 @@ import time
 import torch.optim as optim
 import torch.nn as nn
 import random
-from data_processing.data_proc import *
+from data_proc import *
 
 from decoderattn import Attention_Decoder
 from decoder import Decoder
