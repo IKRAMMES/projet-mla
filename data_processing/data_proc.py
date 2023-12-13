@@ -1,3 +1,4 @@
+#Classe to process data 
 import unicodedata
 import re
 import random
