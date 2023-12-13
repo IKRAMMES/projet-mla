@@ -3,6 +3,7 @@ import torch.optim as optim
 import torch.nn as nn
 import random
 import time
+import tensorsFromPair
 
 class Seq2SeqTrainer:
     def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, device='cpu'):
@@ -89,5 +90,4 @@ class Seq2SeqTrainer:
         return f'Time Elapsed: {int(elapsed_seconds)}s, Remaining: {int(remaining_seconds)}s'
 
 
-trainer = Seq2SeqTrainer(encoder_model, decoder_model, max_sequence_length, start_token, end_token)
-trainer.custom_training_function(num_epochs=10, batch_size=64, pairs=training_pairs)
+

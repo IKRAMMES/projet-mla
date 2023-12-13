@@ -6,16 +6,25 @@ import torch.nn as nn
 import random
 import tensorsFromPair
 import tensorFromSentence
+from decoderattn import Attention_Decoder
+from decoder import Decoder
 
 
 class Seq2SeqTrainer:
-    def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, device='cpu'):
+    def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, decoder_type='simple', device='cpu'):
         self.encoder_model = encoder_model
-        self.decoder_model = decoder_model
+        self.decoder_type = decoder_type
         self.max_sequence_length = max_sequence_length
         self.start_token = start_token
         self.end_token = end_token
         self.device = device
+
+        if decoder_type == 'simple':
+            self.decoder_model = Decoder(encoder_model.hidden_size * 2, decoder_model.output_size)
+        elif decoder_type == 'attention':
+            self.decoder_model = Attention_Decoder(encoder_model.hidden_size, decoder_model.output_size, max_sequence_length)
+        else:
+            raise ValueError("Invalid decoder type. Supported types are 'simple' and 'attention'.")
 
     def train(self, input_sequence, target_sequence, encoder_optimizer, decoder_optimizer, loss_criterion, probability=0.5):
         # Initializations
