@@ -40,11 +40,28 @@ nom_fichier_sortiefr = 'outputfrancais.txt'
 supprimer_lignes_vides(nom_fichier_entree, nom_fichier_sortie)
 supprimer_lignes_vides(nom_fichier_entreefr, nom_fichier_sortiefr)
 
+def combine_files(file1, file2, output_file):
+    with open(file1, 'r', encoding='utf-8') as f1, \
+         open(file2, 'r', encoding='utf-8') as f2, \
+         open(output_file, 'w', encoding='utf-8') as out_file:
 
+        lines_file1 = f1.readlines()
+        lines_file2 = f2.readlines()
 
+        # Vérifie si le nombre de lignes dans les deux fichiers est le même
+        if len(lines_file1) != len(lines_file2):
+            print("Erreur: Le nombre de lignes dans les fichiers n'est pas le même.")
+            return
 
+        # Combine les lignes en utilisant une tabulation entre chaque paire
+        for line1, line2 in zip(lines_file1, lines_file2):
+            combined_line = f"{line1.strip()}\t{line2.strip()}\n"
+            out_file.write(combined_line)
 
+# Utilisation de la fonction avec les noms de fichiers appropriés
+combine_files('eng2000.txt', 'fra2000.txt', 'fra-eng.txt')
 
+'''
 def read_lines(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return [line.strip() for line in file.readlines()]
@@ -62,7 +79,7 @@ concatenated_lines = [f"{english}\t{french}" for english, french in zip(english_
 with open('true-eng-fra.txt', 'w', encoding='utf-8') as file_concatenated:
     for line in concatenated_lines:
         file_concatenated.write(line + '\n')
-
+'''
 
 
 def correspondance_entre_fichiers(fichier1, fichier2, fichier_sortie, nombre_lignes=5000):
