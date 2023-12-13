@@ -1,6 +1,7 @@
 import torch 
 import torch.nn as nn
 from data_processing.data_proc import *
+import random
 
 class MySeq2SeqModelEvaluation(nn.Module):
     def __init__(self, encoder, decoder, max_length, input_lang, output_lang, start_token, end_token, device):
@@ -59,3 +60,13 @@ class MySeq2SeqModelEvaluation(nn.Module):
 
         # Return the decoded words and decoder attentions
         return decoded_words, decoder_attentions[:di + 1]
+
+    def evaluateRandomly(self, pairs, n=10):
+        for i in range(n):
+            pair = random.choice(pairs)
+            print('>', pair[0])
+            print('=', pair[1])
+            output_words, attentions = self.forward(pair[0])
+            output_sentence = ' '.join(output_words)
+            print('<', output_sentence)
+            print('')
