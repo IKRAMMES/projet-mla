@@ -1,6 +1,7 @@
-from trainmodel import Seq2SeqTrainer
 import torch 
-from data_processing.data_proc import Preprocessor
+import torch.nn as nn
+from data_processing.data_proc import *
+
 class MySeq2SeqModelEvaluation(nn.Module):
     def __init__(self, encoder, decoder, max_length, input_lang, output_lang, start_token, end_token, device):
         super(MySeq2SeqModelEvaluation, self).__init__()
