@@ -11,20 +11,24 @@ from decoder import Decoder
 
 
 class Seq2SeqTrainer:
-    def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, decoder_type='simple', device='cpu'):
+    def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, input_lang ,output_lang , device):
         self.encoder_model = encoder_model
-        self.decoder_type = decoder_type
+        #self.decoder_type = decoder_type
         self.max_sequence_length = max_sequence_length
         self.start_token = start_token
         self.end_token = end_token
         self.device = device
+        self.input_lang = input_lang
+        self.output_lang = output_lang
+        self.decoder_model= decoder_model
 
-        if decoder_type == 'simple':
+        '''
+        if self.decoder_type == 'simple':
             self.decoder_model = Decoder(encoder_model.hidden_size * 2, decoder_model.output_size)
-        elif decoder_type == 'attention':
+        elif self.decoder_type == 'attention':
             self.decoder_model = Attention_Decoder(encoder_model.hidden_size, decoder_model.output_size, max_sequence_length)
         else:
-            raise ValueError("Invalid decoder type. Supported types are 'simple' and 'attention'.")
+            raise ValueError("Invalid decoder type. Supported types are 'simple' and 'attention'.")'''
 
     def train(self, input_sequence, target_sequence, encoder_optimizer, decoder_optimizer, loss_criterion, probability=0.5):
         # Initializations
@@ -81,7 +85,7 @@ class Seq2SeqTrainer:
         optimizer_decoder = optim.Adam(self.decoder_model.parameters(), lr=learning_rate)
 
         # Generate training data using random pairs and define the loss criterion
-        training_data = [[tensorsFromPair(random.choice(pairs))] for _ in range(num_epochs)]
+        training_data = [[tensorsFromPair(random.choice(pairs) , self.input_lang,self.output_lang)] for _ in range(num_epochs)]
 
         for epoch in range(1, num_epochs + 1):
             data_point = training_data[epoch - 1]
