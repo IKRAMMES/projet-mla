@@ -47,7 +47,7 @@ class Lang:
 
 class DataPreparation:
     def __init__(self, lang1, lang2, reverse=False):
-        self.input_lang, self.output_lang, self.pairs = self.prepare_data(reverse)
+        #self.input_lang, self.output_lang, self.pairs = self.prepare_data(reverse)
         self.lang1=lang1
         self.lang2=lang2
         self.reverse=reverse

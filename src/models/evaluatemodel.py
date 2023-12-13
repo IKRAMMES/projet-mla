@@ -1,6 +1,6 @@
 import torch 
 import torch.nn as nn
-from data_processing.data_proc import *
+from data_proc import *
 import random
 
 class MySeq2SeqModelEvaluation(nn.Module):
