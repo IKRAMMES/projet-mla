@@ -19,7 +19,7 @@ class MySeq2SeqModelEvaluation(nn.Module):
     def forward(self, sentence):
         with torch.no_grad():
             # Convert the input sentence into a tensor usable by the model
-            input_tensor = tensorFromSentence(self.input_lang, sentence, device)
+            input_tensor = tensorFromSentence(self.input_lang, sentence, self.device)
             input_length = input_tensor.size()[0]
 
             # Initialize the hidden state of the encoder
