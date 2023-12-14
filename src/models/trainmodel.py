@@ -76,6 +76,7 @@ class Seq2SeqTrainer:
         all_losses = []
         current_loss_sum = 0
         plot_loss_sum = 0
+        start = time.time()
 
         # Initialize Adam optimizers for the two networks with the specified learning rate
         optimizer_encoder = optim.SGD(self.encoder_model.parameters(), lr=learning_rate)
@@ -97,7 +98,7 @@ class Seq2SeqTrainer:
             if epoch % print_interval == 0:
                 avg_print_loss = current_loss_sum / print_interval
                 current_loss_sum = 0
-                print('%s (%d %d%%) %.4f' % (self.calculate_time_elapsed(time.time(), epoch / num_epochs),
+                print('%s (%d %d%%) %.4f' % (self.calculate_time_elapsed(start, epoch / num_epochs),
                                              epoch, epoch / num_epochs * 100, avg_print_loss))
 
             # Track losses for plotting at specified intervals
@@ -105,15 +106,15 @@ class Seq2SeqTrainer:
                 avg_plot_loss = plot_loss_sum / plot_interval
                 all_losses.append(avg_plot_loss)
                 plot_loss_sum = 0
-
-        # Print the list of losses for visualization
-        print("Loss Visualization: ", all_losses)
+            
+            return avg_plot_loss
 
     # Function to calculate elapsed and remaining time
     def calculate_time_elapsed(self, start, progress):
         elapsed_seconds = time.time() - start
-        remaining_seconds = (elapsed_seconds / progress) - elapsed_seconds
+        remaining_seconds = (elapsed_seconds / progress) * (1 - progress)
         return f'Time Elapsed: {int(elapsed_seconds)}s, Remaining: {int(remaining_seconds)}s'
+  
   
 
 
