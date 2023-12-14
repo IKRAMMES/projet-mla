@@ -4,6 +4,22 @@ from data_proc import *
 import random
 
 class MySeq2SeqModelEvaluation(nn.Module):
+    """
+    Custom sequence-to-sequence model for evaluation.
+
+    Parameters:
+    - encoder: Encoder module.
+    - decoder: Decoder module.
+    - max_length: Maximum output sequence length.
+    - input_lang: Input language object.
+    - output_lang: Output language object.
+    - start_token: Start token.
+    - end_token: End token.
+
+    Methods:
+    - forward(sentence): Forward pass for the input sentence.
+    - evaluateRandomly(pairs, n=10): Randomly evaluate and print results.
+    """
     def __init__(self, encoder, decoder, max_length, input_lang, output_lang, start_token, end_token, device):
         super(MySeq2SeqModelEvaluation, self).__init__()
         # Initialize model components
@@ -17,6 +33,15 @@ class MySeq2SeqModelEvaluation(nn.Module):
         self.output_lang = output_lang
 
     def forward(self, sentence):
+        """
+        Performs a forward pass for the given input sentence.
+
+        Parameters:
+        - sentence (str): Input sentence.
+
+        Returns:
+        - tuple: Tuple containing the decoded words and decoder attentions.
+        """
         with torch.no_grad():
             # Convert the input sentence into a tensor usable by the model
             input_tensor = tensorFromSentence(self.input_lang, sentence, self.device)
@@ -62,6 +87,13 @@ class MySeq2SeqModelEvaluation(nn.Module):
         return decoded_words, decoder_attentions[:di + 1]
 
     def evaluateRandomly(self, pairs, n=10):
+        """
+        Evaluates the model randomly on a set of sentence pairs and prints the results.
+
+        Parameters:
+        - pairs (list): List of sentence pairs [input_sentence, target_sentence].
+        - n (int): Number of random evaluations to perform. Default is 10.
+        """
         for i in range(n):
             pair = random.choice(pairs)
             print('Sentence : ', pair[0])
