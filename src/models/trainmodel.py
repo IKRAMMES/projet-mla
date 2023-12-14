@@ -6,10 +6,6 @@ import torch.nn as nn
 import random
 from data_proc import *
 
-from decoderattn import Attention_Decoder
-from decoder import Decoder
-
-
 class Seq2SeqTrainer:
     def __init__(self, encoder_model, decoder_model, max_sequence_length, start_token, end_token, input_lang ,output_lang , device):
         self.encoder_model = encoder_model
@@ -37,35 +33,36 @@ class Seq2SeqTrainer:
         total_loss = 0
         encoder_optimizer.zero_grad()
         decoder_optimizer.zero_grad()
-        encoder_hidden_states = torch.zeros(self.max_sequence_length, self.encoder_model.hidden_size * 2, device=self.device)
+        encoder_outputs = torch.zeros(self.max_sequence_length, self.encoder_model.hidden_size * 2, device=self.device)
 
         # Initialize the decoder
         current_input = torch.tensor([[self.start_token]], device=self.device)
 
-        # Encoding Phase
-        hidden_state = self.encoder_model.init_hidden()
-
         for i in range(input_len):
-            encoder_output, hidden_state = self.encoder_model(input_sequence[i])
-            encoder_hidden_states[i] = encoder_output[0, 0]
+            encoder_output, encoder_hidden_state = self.encoder_model(input_sequence[i])
+            encoder_outputs[i] = encoder_output[0, 0]
 
-            # Decoder takes the last hidden state of the encoder
-            hidden_state_decoder = hidden_state
+        # Decoder takes the last hidden state of the encoder
+        hidden_state_decoder = encoder_hidden_state
 
-            # Decoding Phase
-            for j in range(target_len):
-                decoder_output, hidden_state_decoder, _ = self.decoder_model(current_input, hidden_state_decoder, encoder_hidden_states)
+        explore_decision = True if np.random.rand() < probability  else False
+
+        if explore_decision:
+        # Decoding Phase
+             for j in range(target_len):
+                decoder_output, hidden_state_decoder, _ = self.decoder_model(current_input, hidden_state_decoder, encoder_outputs)
                 total_loss += loss_criterion(decoder_output, target_sequence[j])
-
-                explore_decision = (np.random.rand() < probability)
-                if explore_decision:
-                    current_input = target_sequence[j]
-                else:
+                current_input = target_sequence[j]
+        else:
+             for j in range(target_len):
+                    decoder_output, hidden_state_decoder, _ = self.decoder_model(current_input, hidden_state_decoder, encoder_outputs)
                     topv, topi = decoder_output.topk(1)
                     current_input = topi.squeeze().detach()
+                    total_loss += loss_criterion(decoder_output, target_sequence[j])
 
-                if current_input.item() == self.end_token:
-                    break
+                    if current_input.item() == self.end_token:
+                       break
+            
 
         # Backpropagation and weight update
         total_loss.backward()
@@ -74,18 +71,18 @@ class Seq2SeqTrainer:
 
         return total_loss.item() / target_len
 
-    def custom_training_function(self, num_epochs, print_interval=500, pairs=0, plot_interval=50, learning_rate=0.01):
+    def custom_training_function(self, num_epochs, pairs, print_interval=500, plot_interval=50, learning_rate=0.01):
         # Initialize loss tracking variables
         all_losses = []
         current_loss_sum = 0
         plot_loss_sum = 0
 
         # Initialize Adam optimizers for the two networks with the specified learning rate
-        optimizer_encoder = optim.Adam(self.encoder_model.parameters(), lr=learning_rate)
-        optimizer_decoder = optim.Adam(self.decoder_model.parameters(), lr=learning_rate)
+        optimizer_encoder = optim.SGD(self.encoder_model.parameters(), lr=learning_rate)
+        optimizer_decoder = optim.SGD(self.decoder_model.parameters(), lr=learning_rate)
 
         # Generate training data using random pairs and define the loss criterion
-        training_data = [[tensorsFromPair(random.choice(pairs) , self.input_lang,self.output_lang)] for _ in range(num_epochs)]
+        training_data = [tensorsFromPair(random.choice(pairs) , self.input_lang,self.output_lang,self.device) for _ in range(num_epochs)]
 
         for epoch in range(1, num_epochs + 1):
             data_point = training_data[epoch - 1]
