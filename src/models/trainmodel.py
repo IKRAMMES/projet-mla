@@ -112,7 +112,7 @@ class Seq2SeqTrainer:
     # Function to calculate elapsed and remaining time
     def calculate_time_elapsed(self, start, progress):
         elapsed_seconds = time.time() - start
-        remaining_seconds = (elapsed_seconds / progress) * (1 - progress)
+        remaining_seconds = (elapsed_seconds / progress) - elapsed_seconds
         return f'Time Elapsed: {int(elapsed_seconds)}s, Remaining: {int(remaining_seconds)}s'
   
 
