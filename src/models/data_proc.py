@@ -220,7 +220,7 @@ class DataPreparation:
         print("Read %s sentence pairs" % len(pairs))
         pairs = self.filter_pairs(pairs)
         print("Trimmed to %s sentence pairs" % len(pairs))
-        print("Counting words...")
+        print("Counting words")
         for pair in pairs:
             self.input_lang.add_sentence(pair[0])
             self.output_lang.add_sentence(pair[1])
