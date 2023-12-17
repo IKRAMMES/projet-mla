@@ -134,3 +134,10 @@ class Seq2SeqTrainer:
         elapsed_seconds = time.time() - start
         remaining_seconds = (elapsed_seconds / progress) * (1 - progress)
         return f'Time Elapsed: {int(elapsed_seconds)}s, Remaining: {int(remaining_seconds)}s'
+
+
+  
+
+
+
+
