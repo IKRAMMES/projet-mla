@@ -5,6 +5,8 @@ This project focuses on optimizing English-to-French machine translation by impl
 
 # Implementation Overview:
 
+The "src" directory encompasses three main subdirectories: "models," "tests," and "metrics." Within the "metrics" folder, we calculate metrics such as BLEU score, negative log-likelihood (NLL), and cross-entropy loss. In the "tests" directory, we conduct comprehensive testing for all modules, ensuring robust functionality. Meanwhile, the "models" directory houses the entire architecture, complete with a Jupyter Notebook file serving as a demonstration.
+
 ## Encoder:
 
 - Utilizes an embedding layer for converting word indices into dense vectors.
