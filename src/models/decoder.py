@@ -18,7 +18,7 @@ class Decoder(nn.Module):
         
         # GRU layer to process input and previous hidden state
         # Input size: embedding_size (hidden_size), 2*  hidden_size (previous hidden state) = for forward & backward 
-        self.gru = nn.GRU(hidden_size * 3, hidden_size)
+        self.gru = nn.GRU(hidden_size * 2, hidden_size *2)
 
         # Output layer to produce final predictions
         # Input size: hidden_size, output_size (vocabulary size)

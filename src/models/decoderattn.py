@@ -54,7 +54,7 @@ class Attention_Decoder(nn.Module):
         embedded = self.dropout(embedded)
 
         # Calculate attention weights using a linear layer
-        Attention_weights = F.softmax(self.Attention_weights_layer(torch.cat((embedded[0], hidden[0]), 1)))
+        Attention_weights = F.softmax(self.Attention_weights_layer(torch.cat((embedded[0], hidden[0]), 1)), dim=1)
 
         # Apply attention to encoder outputs
         Attention_applied = torch.bmm(Attention_weights.unsqueeze(0), encoder_outputs.unsqueeze(0))
@@ -62,7 +62,7 @@ class Attention_Decoder(nn.Module):
         # Concatenate embedded input and attention-applied context vector
 
         # and Apply hyperbolic tangent activation function
-        output = F.tanh(Attention_applied)
+        output = torch.tanh(Attention_applied)
         
         # Process the output through the GRU
         output, hidden = self.gru(output, hidden)

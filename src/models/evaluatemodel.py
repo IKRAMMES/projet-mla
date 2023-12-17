@@ -44,8 +44,8 @@ class MySeq2SeqModelEvaluation(nn.Module):
         """
         with torch.no_grad():
             # Convert the input sentence into a tensor usable by the model
-            input_tensor = tensorFromSentence(self.input_lang, sentence, self.device)
-            input_length = input_tensor.size()[0]
+            tensorised_sentence = tensorize_phrase(self.input_lang, sentence, self.device)
+            input_length = tensorised_sentence.size()[0]
 
             # Initialize the hidden state of the encoder
             encoder_hidden = self.encoder.initHidden()
@@ -55,7 +55,7 @@ class MySeq2SeqModelEvaluation(nn.Module):
 
             # Encode the input sequence
             for ei in range(input_length):
-                encoder_output, encoder_hidden = self.encoder(input_tensor[ei])
+                encoder_output, encoder_hidden = self.encoder(tensorised_sentence[ei])
                 encoder_outputs[ei] = encoder_output[0, 0]
 
             # Initialize the decoder input with the start token
@@ -86,7 +86,7 @@ class MySeq2SeqModelEvaluation(nn.Module):
         # Return the decoded words and decoder attentions
         return decoded_words, decoder_attentions[:di + 1]
 
-    def evaluateRandomly(self, pairs, n=10):
+    def evaluateRandomly(self, sentences, n=10):
         """
         Evaluates the model randomly on a set of sentence pairs and prints the results.
 
@@ -95,10 +95,10 @@ class MySeq2SeqModelEvaluation(nn.Module):
         - n (int): Number of random evaluations to perform. Default is 10.
         """
         for i in range(n):
-            pair = random.choice(pairs)
-            print('Sentence : ', pair[0])
-            print('Translation : ', pair[1])
-            output_words, attentions = self.forward(pair[0])
+            sentences = random.choice(sentences)
+            print('Sentence : ', sentences[0])
+            print('Translation : ', sentences[1])
+            output_words, attentions = self.forward(sentences[0])
             output_sentence = ' '.join(output_words)
             print('Prediction : ', output_sentence)
             print('')

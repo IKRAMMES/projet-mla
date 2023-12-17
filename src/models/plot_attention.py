@@ -1,3 +1,4 @@
+import torch
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
@@ -51,4 +52,3 @@ def plot_attention(attention, sentence, predicted_sentence):
   # Ajouter une barre de couleur
     cbar = plt.colorbar(im)
     cbar.set_label('Attention', color='white')
-
