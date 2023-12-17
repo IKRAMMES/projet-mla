@@ -23,11 +23,6 @@ This project focuses on optimizing English-to-French machine translation by impl
 - During inference, the encoder encodes the source sequence, and the decoder generates the target sequence using attention.
 
 
-## Differences from the Paper:
-
-- Incorporation of word embeddings in RNNs for improved text processing and semantic understanding.
-- Decision not to implement beam search to balance decoding complexity and output quality
-
 ----------------------------------------------------------------------------------
 
 # Data:
@@ -43,5 +38,12 @@ This project focuses on optimizing English-to-French machine translation by impl
 - Managed vocabulary by assigning indices to words for efficient numerical representation.
 - Tokenization facilitated the numerical representation of sequences.
 - Organized data in a PyTorch-compatible format for efficient model training.
+
+-----------------------------------------------------------------------
+# Bibliographie :
+- Neural Machine Translation by jointly learning to align and translate : https ://arxiv.org/abs/1409.0473.
+- WMT ’14 contains the following English-French parallel corpora: https://www.statmt.org/wmt14/translation-task.html
+- PyTorch Tutorials : https://github.com/pytorch/tutorials/tree/main
+- MEDIUM Review — Neural Machine Translation :  https://sh-tsang.medium.com/review-neural-machine-translation-by-jointly-learning-to-align-and-translate-3b381fc032e3
 
 
